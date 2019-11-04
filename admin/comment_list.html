@@ -30,17 +30,7 @@
           </tr>
         </thead>
         <tbody id="commentBox">
-          <tr>
-            <td>小周</td>
-            <td>这是一条测试评论，欢迎光临</td>
-            <td>《世界，你好》</td>
-            <td>2017-07-04 12:00:00</td>
-            <td>已批准</td>
-            <td class="text-center">
-              <a href="javascript:;" class="btn btn-warning btn-xs">拒绝</a>
-              <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
-            </td>
-          </tr>
+          
         </tbody>
       </table>
 
@@ -66,6 +56,21 @@
   <script src="js/jquery-1.12.4.min.js"></script>
   <script src="../js/template-web.js"></script>
   <script src="./js/jquery.twbsPagination.js"></script>
+  <script type="text/html" id="commentListTpl">
+    {{each data}}
+      <tr>
+          <td>{{$value.author}}</td>
+          <td>{{$value.content}}</td>
+          <td>{{$value.title}}</td>
+          <td>{{$value.date}} {{$value.time}}</td>
+          <td>{{$value.state}}</td>
+          <td class="text-center">
+            <a href="javascript:;" class="btn btn-warning btn-xs">拒绝</a>
+            <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+          </td>
+        </tr>
+      {{/each}}
+  </script>
   <script>
     // 设置左侧菜单
     $('#release_btn').click(function () {
@@ -75,6 +80,15 @@
 
   <!-- 业务逻辑代码 -->
   <script>
+    $.ajax({
+      url: 'http://47.111.184.55:8888/api/v1/admin/comment/search',
+      type: 'get',
+      success: function (data) {
+        console.log(data);
+        var html = template('commentListTpl', { data: data })
+        $('#commentBox').html(html)
+      }
+    })
   </script>
 </body>
 
