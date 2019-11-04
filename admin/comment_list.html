@@ -30,7 +30,7 @@
           </tr>
         </thead>
         <tbody id="commentBox">
-          
+
         </tbody>
       </table>
 
@@ -63,10 +63,15 @@
           <td>{{$value.content}}</td>
           <td>{{$value.title}}</td>
           <td>{{$value.date}} {{$value.time}}</td>
+
+          <!-- //文章评论状态的功能 -->
+          
           <td>{{$value.state}}</td>
+          <!-- //文章评论状态的功能 -->
+
           <td class="text-center">
-            <a href="javascript:;" class="btn btn-warning btn-xs">拒绝</a>
-            <a href="javascript:;" class="btn btn-danger btn-xs">删除</a>
+            <a href="javascript:;" class="btn btn-warning btn-xs" data-id="{{$value.id}}" id="rejectComment">拒绝</a>
+            <a href="javascript:;" class="btn btn-danger btn-xs delete" data-id="{{$value.id}}">删除</a>
           </td>
         </tr>
       {{/each}}
@@ -80,15 +85,80 @@
 
   <!-- 业务逻辑代码 -->
   <script>
-    $.ajax({
-      url: 'http://47.111.184.55:8888/api/v1/admin/comment/search',
-      type: 'get',
-      success: function (data) {
-        console.log(data);
-        var html = template('commentListTpl', { data: data })
-        $('#commentBox').html(html)
-      }
+    $(function () {
+
+      //获取所有的文章评论并且展示到页面中
+
+      $.ajax({
+        url: 'http://47.111.184.55:8888/api/v1/admin/comment/search',
+        type: 'get',
+        success: function (data) {
+          // console.log(data);
+          var html = template('commentListTpl', { data: data })
+          $('#commentBox').html(html)
+        }
+      })
+
+
+      //文章评论的删除功能 ----
+      $('#commentBox').on('click', '.delete', function () {
+        var id = $(this).attr('data-id');
+        console.log(id);
+        if (confirm('确定残忍删除?')) {
+          $.ajax({
+            url: 'http://47.111.184.55:8888/api/v1/admin/comment/delete',
+            type: 'post',
+            data:{id:id},
+            success: function (res) {
+              console.log(res);
+              console.log('.....');
+              location.reload();
+            }
+          })
+        }
+
+      })
+
+      //不通过审核文章评论
+      $('#commentBox').on('click','#rejectComment',function(){
+          var id = $(this).attr('data-id');
+          if(confirm('确定审核不通过这条评论?')){
+            $.ajax({
+              url:'http://47.111.184.55:8888/api/v1/admin/comment/reject',
+              data:{id:id},
+              type:'post',
+              success:function(res){
+                console.log(res);
+                 location.reload();
+              }
+
+            })
+          } 
+          return false;       
+      })
+
+
+      //不通过审核文章评论
+      // $('#commentBox').on('click',"#rejectComment",function(){
+      //     var id=$(this).attr('data-id');
+      //     if(confirm('确定审核通过这条评论?')){
+      //       $.ajax({
+      //         url:'http://47.111.184.55:8888/api/v1/admin/comment/pass',
+      //         data:{id:id},
+      //         type:'post',
+      //         success:function(res){
+      //           console.log(res.msg);
+      //            //location.reload();
+      //            var html=template('')
+      //         }
+
+      //       })
+      //     }
+      //     return false
+      // })
+
     })
+
   </script>
 </body>
 
