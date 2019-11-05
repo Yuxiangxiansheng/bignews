@@ -57,24 +57,29 @@
   <script src="../js/template-web.js"></script>
   <script src="./js/jquery.twbsPagination.js"></script>
   <script type="text/html" id="commentListTpl">
-    {{each data}}
+    <% for (var i=0;i<data.length;i++){ %>
       <tr>
-          <td>{{$value.author}}</td>
-          <td>{{$value.content}}</td>
-          <td>{{$value.title}}</td>
-          <td>{{$value.date}} {{$value.time}}</td>
+          <td><%= data[i].author %></td>
+          <td><%= data[i].content %></td>
+          <td><%= data[i].title %></td>
+          <td><%= data[i].date %>  <%= data[i].time %></td>
 
           <!-- //文章评论状态的功能 -->
           
-          <td>{{$value.state}}</td>
+          <td><%= data[i].state %></td>
           <!-- //文章评论状态的功能 -->
 
-          <td class="text-center">
-            <a href="javascript:;" class="btn btn-warning btn-xs" data-id="{{$value.id}}" id="rejectComment">拒绝</a>
-            <a href="javascript:;" class="btn btn-danger btn-xs delete" data-id="{{$value.id}}">删除</a>
+
+          <td class="text-center" id="CommentBox">          
+           <% if(data[i].state=="已拒绝"){ %>       
+              <a href="javascript:;" class="btn btn-primary btn-xs" data-id="<%= data[i].id %>" id="agreeComment">同意</a>
+           <% }else{ %>          
+              <a href="javascript:;" class="btn btn-warning btn-xs" data-id="<%= data[i].id %>" id="rejectComment">拒绝</a>              
+           <% } %>          
+            <a href="javascript:;" class="btn btn-danger btn-xs delete" data-id="<%= data[i].id %>">删除</a>
           </td>
         </tr>
-      {{/each}}
+      <% } %>
   </script>
   <script>
     // 设置左侧菜单
@@ -82,7 +87,9 @@
       window.parent.setMenu(0, 0);
     })
   </script>
-
+  <script type="text/html" id="CommentScript">
+    
+  </script>
   <!-- 业务逻辑代码 -->
   <script>
     $(function () {
@@ -93,9 +100,10 @@
         url: 'http://47.111.184.55:8888/api/v1/admin/comment/search',
         type: 'get',
         success: function (data) {
-          // console.log(data);
+          console.log(data);
           var html = template('commentListTpl', { data: data })
           $('#commentBox').html(html)
+          // console.log(html)
         }
       })
 
@@ -120,7 +128,27 @@
       })
 
       //不通过审核文章评论
-      $('#commentBox').on('click','#rejectComment',function(){
+      $('#commentBox').on('click','#agreeComment',function(){
+        var id=$(this).attr('data-id');
+          if(confirm('确定审核通过这条评论?')){
+            $.ajax({
+              url:'http://47.111.184.55:8888/api/v1/admin/comment/pass',
+              data:{id:id},
+              type:'post',
+              success:function(res){
+                console.log(res.msg);
+                 location.reload();
+                 //var html=template('CommentScript',res)
+              }
+
+            })
+          }
+          return false
+      })
+
+
+      //通过审核文章评论
+      $('#commentBox').on('click',"#rejectComment",function(){
           var id = $(this).attr('data-id');
           if(confirm('确定审核不通过这条评论?')){
             $.ajax({
@@ -128,34 +156,14 @@
               data:{id:id},
               type:'post',
               success:function(res){
-                console.log(res);
+                console.log(res.msg);
                  location.reload();
               }
 
             })
           } 
-          return false;       
+          return false;      
       })
-
-
-      //不通过审核文章评论
-      // $('#commentBox').on('click',"#rejectComment",function(){
-      //     var id=$(this).attr('data-id');
-      //     if(confirm('确定审核通过这条评论?')){
-      //       $.ajax({
-      //         url:'http://47.111.184.55:8888/api/v1/admin/comment/pass',
-      //         data:{id:id},
-      //         type:'post',
-      //         success:function(res){
-      //           console.log(res.msg);
-      //            //location.reload();
-      //            var html=template('')
-      //         }
-
-      //       })
-      //     }
-      //     return false
-      // })
 
     })
 

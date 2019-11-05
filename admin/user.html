@@ -17,31 +17,40 @@
     <div class="common_title">
       用户信息修改
     </div>
-    <div class="container-fluid common_con">
-      <form class="form-horizontal article_form">
+    <div class="container-fluid common_con" id="usermodifyBox">
+      
+    </div>
+  </div>
+
+
+  <script src="js/jquery-1.12.4.min.js"></script>
+  <script src="js/template-web.js"></script>
+  <!-- 业务逻辑代码 -->
+  <script type="text/html" id="usermodifyTpl">
+    <form class="form-horizontal article_form" id="userForm">
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-2 control-label">用户名称：</label>
           <div class="col-sm-4">
-            <input type="text" name="username" class="form-control username" id="inputEmail3" value="李思思">
+            <input type="text" name="username" class="form-control username" id="username" value="{{username}}" >
           </div>
         </div>
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-2 control-label">昵称：</label>
           <div class="col-sm-4">
-            <input type="text" name="nickname" class="form-control nickname" id="inputEmail3" value="思思">
+            <input type="text" name="nickname" class="form-control nickname" id="nickname" value="{{nickname}}">
           </div>
         </div>
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-2 control-label">邮箱：</label>
           <div class="col-sm-4">
-            <input type="text" name="email" class="form-control email" id="inputEmail3" value="lisisi@126.com">
+            <input type="text" name="email" class="form-control email" id="email" value="{{email}}">
           </div>
         </div>
 
         <div class="form-group">
           <label for="inputPassword3" class="col-sm-2 control-label">用户图标：</label>
           <div class="col-sm-10">
-            <img src="images/2.jpg" alt="" class="user_pic">
+            <img src="" alt="" class="user_pic" name="userPic" id="imgBox">
             <input style="display: none" name="userPic" type="file" id="exampleInputFile">
             <!-- 给label标签的for属性赋值,值是input标签的id,那这样的话点击label就相当于点击了input -->
             <br>
@@ -54,26 +63,77 @@
         <div class="form-group">
           <label for="inputEmail3" class="col-sm-2 control-label">密码：</label>
           <div class="col-sm-4">
-            <input type="password" name="password" class="form-control password" id="inputEmail3" value="12345678">
+            <input type="password" name="password" class="form-control password" id="password" value="{{password}}">
           </div>
         </div>
 
 
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-success btn-edit">修改</button>
+            <button type="submit" class="btn btn-success btn-edit edit">修改</button>
           </div>
         </div>
       </form>
-    </div>
-  </div>
-
-
-  <script src="js/jquery-1.12.4.min.js"></script>
-
-  <!-- 业务逻辑代码 -->
-  <script>
-
+  
   </script>
+  
+<script>
+    // 实现上传图片功能
+    $('#usermodifyBox').on('change', '#exampleInputFile', function() {
+        var file = this.files[0];
+        var imgUrl = URL.createObjectURL(file)
+        console.log(imgUrl);
+        $('#imgBox').attr('src', imgUrl)
+            // $('#exampleHidden').val(imgUrl)
+
+    })
+</script>
+<!-- 业务逻辑代码 -->
+<script>
+    // <input type="hidden" id="exampleHidden" name="user_pic">
+
+    // {{data.userPic.replace('http://172.16.19.30:8888',http://47.111.184.55:8888)}}
+
+    $(function() {
+      //获取用户信息并展示功能
+        $.ajax({
+            type: 'get',
+            url: 'http://47.111.184.55:8888/api/v1/admin/user/detail',
+            success: function(res) {
+                console.log(res);
+                // console.log(data.user_pic);
+                var html = template('usermodifyTpl', res.data)
+                $('#usermodifyBox').html(html)
+            }
+
+        })
+
+
+        //修改功能
+        $('#usermodifyBox').on('click', '.edit', function() {
+            // console.log(2);
+            $('#usermodifyBox').on('submit', '#userForm', function() {
+                // 获取表单内容
+                // var formData = $(this).serialize();
+                var formData = new FormData($('#userForm')[0])
+                console.log(formData);
+                $.ajax({
+                    type: 'post',
+                    url: 'http://47.111.184.55:8888/api/v1/admin/user/edit',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(data) {
+                        // 重新刷新页面
+                        alert(data.msg);
+                        location.reload()
+                    }
+                })
+                return false
+            })
+        })
+    })
+</script>
+
 </body>
 </html>
