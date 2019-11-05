@@ -1,7 +1,6 @@
 // 当添加分类表单发生提交行为的时候
 $('#model_add').on('click', function () {
     // 获取用户在表单中输入的内容
-    
     var formData = $('#addCategory').serialize();   
     //向服务器端发送请求 添加分类 
     $.ajax({
@@ -71,14 +70,11 @@ $('#categoryBox').on('click', '.edit', function () {
         }
     })
 
-    // 获取
+    // 利用事件委托,为保存按钮添加点击事件
     $('#addModal').on('click', '#modifyAdd', function () {
         // 获取用户在表单中输入的内容
-        console.log(1);
         var name = $('#nameAdd').val()
         var slug = $('#slugAdd').val()
-        // var formData = $('#addCategory').serialize();
-        // console.log(formData);
         
         //向服务器端发送请求 添加分类 
         $.ajax({
@@ -93,7 +89,7 @@ $('#categoryBox').on('click', '.edit', function () {
                 location.reload();
              }
         })
-        //console.log(formData)
+
         // 阻止表单默认提交行为
         return false;
     })
