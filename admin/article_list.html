@@ -20,16 +20,11 @@
     <div class="container-fluid common_con">
       <div class="row opt_btns">
         <div class="col-xs-6">
-          <form class="form-inline">
-            <select id="selCategory" name="" class="form-control input-sm">
-              <option value="">所有分类</option>
-              <option>未分类</option>
-              <option>奇趣事</option>
-              <option>会生活</option>
-              <option>爱旅行</option>
+          <form class="form-inline" id="filterForm">
+            <select name="category" class="form-control input-sm" id="article_category">
+
             </select>
-            <select id="selStatus" name="" class="form-control input-sm">
-              <option value="">所有状态</option>
+            <select id="selStatus" name="state" class="form-control input-sm">
               <option value="草稿">草稿</option>
               <option value="已发布">已发布</option>
             </select>
@@ -53,8 +48,7 @@
           </tr>
         </thead>
         <tbody id="postsBox">
-  
-   
+
         </tbody>
       </table>
 
@@ -80,29 +74,44 @@
   <script src="js/jquery-1.12.4.min.js"></script>
   <script src="./js/template-web.js"></script>
   <script src="./js/jquery.twbsPagination.js"></script>
-  <!-- 删除模板 -->
-  <script type="text/html" id="postsTpl">
+  <script type="text/html" id="categoryTpl">
     {{each data}}
-      <tr>
-          <td>王积千造统最头</td>
-          <td>杰克</td>
-          <td>奇趣事</td>
-          <td class="text-center">2017-06-08 07:08:46</td>
-          <td class="text-center">已发布</td>
-          <td class="text-center">
-            <a href="article_edit.html" class="btn btn-default btn-xs">编辑</a>
-            <a href="javascript:deleteTr( 1005 );" class="btn btn-danger btn-xs delete" id="cancel" data-id="{{$value._id}}">删除</a>
-          </td>
-      </tr>
-      {{/each}}
+    <option value='{{$value.id}}'>{{$value.name}}</option>
+    {{/each}}
   </script>
+  <script type="text/html" id="postsTpl">
+    {{each data.data}}
+    <tr>
+
+      <td>{{$value.title}}</td>
+      <td>{{$value.author}}</td>
+      <td>{{$value.category}}</td>
+      <td class="text-center">{{$value.date}}</td>
+
+
+      <td class="text-center">{{$value.state}}</td>
+
+
+      <td class="text-center">
+        <a href="article_edit.html?id={{$value.id}}" class="btn btn-default btn-xs">编辑</a>
+        <a href="javascript:delete;" class="btn btn-danger btn-xs delete" data-id="{{$value.id}}">删除</a>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  <script src="./js/article_list.js" id="postTpl"></script>
   <script>
     // 设置左侧菜单
     $('#release_btn').click(function () {
       window.parent.setMenu(1, 1);
     })
   </script>
-  <script src="./js/article_list.js"></script>
+
+  <!-- 业务逻辑代码 -->
+  <script>
+
+  </script>
+
 </body>
 
 </html>
