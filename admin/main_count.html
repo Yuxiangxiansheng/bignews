@@ -13,33 +13,8 @@
 </head>
 
 <body>
-  <div class="container-fluid">
-    <div class="row spannel_list">
-      <div class="col-sm-3 col-xs-6">
-        <div class="spannel">
-          <em>10015</em><span>篇</span>
-          <b>总文章数</b>
-        </div>
-      </div>
-      <div class="col-sm-3 col-xs-6">
-        <div class="spannel scolor01">
-          <em>123</em><span>篇</span>
-          <b>日新增文章数</b>
-        </div>
-      </div>
-      <div class="col-sm-3 col-xs-6">
-        <div class="spannel scolor02">
-          <em>35</em><span>条</span>
-          <b>评论总数</b>
-        </div>
-      </div>
-      <div class="col-sm-3 col-xs-6">
-        <div class="spannel scolor03">
-          <em>123</em><span>条</span>
-          <b>日新增评论数</b>
-        </div>
-      </div>
-    </div>
+  <div class="container-fluid" id="statistics">
+   
   </div>
 
   <div class="container-fluid">
@@ -58,6 +33,8 @@
   </div>
 
   <script src="js/jquery-1.12.4.min.js"></script>
+  <script src="../js/template-web.js"></script>
+  <script src="../admin/js/jedate/js/main-count.js"></script>
   <script type="text/javascript" src="js/echarts.min.js"></script>
   <script>
     var oChart = echarts.init(document.getElementById('curve_show'));
@@ -383,7 +360,34 @@
     oColumn.setOption(oColumnopt)
 
   </script>
-
+<!-- 引用获取数据模板 -->
+<script type="text/html" id="statisticsTpl">
+  <div class="row spannel_list">
+      <div class="col-sm-3 col-xs-6">
+        <div class="spannel">
+          <em>{{dayArticle}}</em><span>篇</span>
+          <b>总文章数</b>
+        </div>
+      </div>
+      <div class="col-sm-3 col-xs-6">
+        <div class="spannel scolor01">
+          <em>{{dayComment}}</em><span>篇</span>
+          <b>日新增文章数</b>
+        </div>
+      </div>
+      <div class="col-sm-3 col-xs-6">
+        <div class="spannel scolor02">
+          <em>{{totalArticle}}</em><span>条</span>
+          <b>评论总数</b>
+      </div>
+    </div>
+      <div class="col-sm-3 col-xs-6">
+        <div class="spannel scolor03">
+          <em>{{totalComment}}</em><span>条</span>
+          <b>日新增评论数</b>
+        </div>
+      
+    </div></script>
 </body>
 
 </html>
